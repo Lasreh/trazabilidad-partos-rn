@@ -1,0 +1,58 @@
+{% extends "components/Layout/base_pages.html" %}
+{% load crispy_forms_tags %}
+
+{% block content_pages %}
+
+<!-- 🔥 MENSAJE SIMPLES DE ÉXITO -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="p-3 mb-4 rounded text-white bg-green-600">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<h1 class="text-2xl font-bold mb-4">Crear Paciente</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.nombre|as_crispy_field }}
+    {{ form.apellido_paterno|as_crispy_field }}
+    {{ form.apellido_materno|as_crispy_field }}
+    {{ form.run|as_crispy_field }}
+    {{ form.dv|as_crispy_field }}
+    {{ form.edad|as_crispy_field }}
+    {{ form.nacionalidad|as_crispy_field }}
+
+    <!-- 🔥 CHECKBOXES HORIZONTALES -->
+    <div class="mt-4 grid grid-cols-2 gap-2">
+        <label class="flex items-center gap-2">
+            {{ form.inmigrante }} Inmigrante
+        </label>
+
+        <label class="flex items-center gap-2">
+            {{ form.pueblo_originario }} Pueblo originario
+        </label>
+
+        <label class="flex items-center gap-2">
+            {{ form.discapacidad }} Discapacidad
+        </label>
+
+        <label class="flex items-center gap-2">
+            {{ form.privada_libertad }} Privada de libertad
+        </label>
+
+        <label class="flex items-center gap-2">
+            {{ form.trans_masculino }} Trans masculino
+        </label>
+    </div>
+
+    <button type="submit"
+        class="mt-6 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+        Guardar Paciente
+    </button>
+
+</form>
+
+{% endblock %}

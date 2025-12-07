@@ -1,0 +1,20 @@
+<div class="notifications"></div>
+
+{% if messages_list %}
+  {{ messages_list|json_script:"messages-data" }}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const messages = JSON.parse(document.getElementById('messages-data').textContent);
+
+      messages.forEach(function(message) {
+        if (message.tags.includes('error') && !message.tags.includes('excel_error')) {
+          error(message.text);
+        } else if (message.tags.includes('success') && !message.text.includes('Ha cerrado sesión') && !message.text.includes('Ha iniciado sesión exitosamente')) {
+          success(message.text);
+        } else if (message.tags.includes('info')) {
+          warning(message.text);
+        }
+      });
+    });
+  </script>
+{% endif %}

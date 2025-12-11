@@ -2,23 +2,37 @@
 
 {% block content_pages %}
 
-{% if messages %}
-    {% for message in messages %}
-        <div class="p-3 mb-4 rounded text-white {% if message.tags == 'success' %}bg-green-600{% elif message.tags == 'error' %}bg-red-600{% endif %}">
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif %}
+<h1 class="text-2xl font-bold mb-6">Lista de Pacientes</h1>
 
-<h1 class="text-2xl font-bold mb-4">Lista de Pacientes</h1>
+<!-- Formulario de búsqueda por RUN -->
+<form method="get" class="mb-4 flex space-x-2">
+    <input type="text" 
+        name="run" 
+        placeholder="(Ej: 12345678-9)" 
+        value="{{ run_query }}"
+        class="border px-3 py-2 rounded w-1/3"
+        pattern="\d{7,8}-[0-9kK]" 
+        title="Ingrese un RUN válido (7 a 8 números + DV)">
+    
+    <!-- Botón Buscar -->
+    <button type="submit" 
+            class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+        Buscar
+    </button>
+    
+    <!-- Botón Limpiar -->
+    <button type="button" 
+            onclick="document.querySelector('input[name=run]').value=''; this.form.submit();" 
+            class="px-4 py-2 ml-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+        Limpiar
+    </button>
+</form>
+
+
 
 <!-- Botón atrás -->
-<div class="mb-4">
-    <!-- Opción 1: Redirigir a lista de pacientes -->
+<div class="mb-6">
     <a href="{% url 'lista_pacientes' %}" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Atrás</a>
-
-    <!-- Opción 2: Volver a la página anterior del navegador -->
-    <!-- <a href="javascript:history.back()" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Atrás</a> -->
 </div>
 
 <div x-data="{ selected: null }" class="overflow-x-auto">
@@ -36,24 +50,26 @@
                 <tr x-show="selected === null || selected === {{ paciente.id }}"
                     class="hover:bg-gray-100 cursor-pointer"
                     @click="selected = selected === {{ paciente.id }} ? null : {{ paciente.id }}">
-                    <td class="px-4 py-2 border">{{ paciente.nombre_completo }}</td>
+                    <td class="px-4 py-2 border font-medium">{{ paciente.nombre }} {{ paciente.apellido_paterno }} {{ paciente.apellido_materno }}</td>
                     <td class="px-4 py-2 border">{{ paciente.run }}</td>
                     <td class="px-4 py-2 border">{{ paciente.dv }}</td>
                     <td class="px-4 py-2 border">{{ paciente.edad }}</td>
                 </tr>
+
+                <!-- Fila expandida con detalles -->
                 <tr x-show="selected === {{ paciente.id }}">
                     <td colspan="4" class="px-4 py-4 border bg-gray-50">
-                        <ul class="space-y-1 text-sm">
-                            <li><strong>Nacionalidad:</strong> {{ paciente.nacionalidad }}</li>
-                            <li><strong>Inmigrante:</strong> {% if paciente.inmigrante %}Sí{% else %}No{% endif %}</li>
-                            <li><strong>Pueblo originario:</strong> {% if paciente.pueblo_originario %}Sí{% else %}No{% endif %}</li>
-                            <li><strong>Discapacidad:</strong> {% if paciente.discapacidad %}Sí{% else %}No{% endif %}</li>
-                            <li><strong>Privada de libertad:</strong> {% if paciente.privada_libertad %}Sí{% else %}No{% endif %}</li>
-                            <li><strong>Trans masculino:</strong> {% if paciente.trans_masculino %}Sí{% else %}No{% endif %}</li>
-                            <li><strong>Creado por:</strong> {{ paciente.created_by }}</li>
-                            <li><strong>Creado en:</strong> {{ paciente.created_at|date:"d/m/Y H:i" }}</li>
-                            <li><strong>Actualizado en:</strong> {{ paciente.updated_at|date:"d/m/Y H:i" }}</li>
-                        </ul>
+                        <div class="p-4 bg-white border rounded shadow-sm grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div><strong>Nacionalidad:</strong> {{ paciente.nacionalidad }}</div>
+                            <div><strong>Inmigrante:</strong> {% if paciente.inmigrante %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Pueblo originario:</strong> {% if paciente.pueblo_originario %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Discapacidad:</strong> {% if paciente.discapacidad %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Privada de libertad:</strong> {% if paciente.privada_libertad %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Trans masculino:</strong> {% if paciente.trans_masculino %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Creado por:</strong> {{ paciente.created_by }}</div>
+                            <div><strong>Creado en:</strong> {{ paciente.created_at|date:"d/m/Y H:i" }}</div>
+                            <div><strong>Actualizado en:</strong> {{ paciente.updated_at|date:"d/m/Y H:i" }}</div>
+                        </div>
                     </td>
                 </tr>
             {% empty %}
@@ -67,9 +83,10 @@
 
 <!-- Paginación -->
 {% if pacientes.paginator.num_pages > 1 %}
-<div class="mt-4 flex justify-center space-x-2">
+<div class="mt-6 flex justify-center space-x-2">
     {% if pacientes.has_previous %}
-        <a href="?page={{ pacientes.previous_page_number }}" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Anterior</a>
+        <a href="?page={{ pacientes.previous_page_number }}{% if run_query %}&run={{ run_query }}{% endif %}"
+           class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Anterior</a>
     {% endif %}
 
     <span class="px-3 py-1 bg-gray-200 rounded">
@@ -77,17 +94,15 @@
     </span>
 
     {% if pacientes.has_next %}
-        <a href="?page={{ pacientes.next_page_number }}" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Siguiente</a>
+        <a href="?page={{ pacientes.next_page_number }}{% if run_query %}&run={{ run_query }}{% endif %}"
+           class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Siguiente</a>
     {% endif %}
 </div>
 {% else %}
-<div class="mt-4 flex justify-center">
-    <span class="px-3 py-1 bg-gray-200 rounded">
-        Página 1 de 1
-    </span>
+<div class="mt-6 flex justify-center">
+    <span class="px-3 py-1 bg-gray-200 rounded">Página 1 de 1</span>
 </div>
 {% endif %}
-
 
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 

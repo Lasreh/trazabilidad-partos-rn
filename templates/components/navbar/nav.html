@@ -22,7 +22,7 @@
         </li>
 
         <!-- REGISTRO -->
-        {% if user.profile.position_FK.permission_code != "RESTRICTED" %}
+        {% if user.profile.position_FK.permission_code != "RESTRICTED" and user.profile.position_FK.permission_code != "MATRONA" %}
         <li>
           <a href="{% url 'Register' %}" class=" group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold 
             {% if request.path == '/registro/' %}text-white bg-gray-800 
@@ -149,6 +149,141 @@
         <!-- FIN SUBMENÚ PACIENTES -->
 
 
+        <!--- SUBMENÚ PARTOS --->
+        {% if request.path|slice:":10" == "/partos" %}
+          <li x-data="{ open: true }">
+        {% else %}
+          <li x-data="{ open: false }">
+        {% endif %}
+
+          <!-- Botón principal -->
+          <button @click="open = !open"
+            class="w-full group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
+            {% if request.path|slice:":10" == "/partos" %}
+              text-white bg-gray-800
+            {% else %}
+              text-gray-400 hover:text-white hover:bg-gray-800
+            {% endif %}">
+            
+            <!-- Icono Personas -->
+            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24"
+              stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 
+                4.125 4.125 0 00-7.533-2.493
+                M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07
+                M15 19.128v.106A12.318 12.318 0 018.624 21
+                c-2.331 0-4.512-.645-6.374-1.766l-.001-.109
+                a6.375 6.375 0 0111.964-3.07
+                M12 6.375a3.375 3.375 0 11-6.75 0 
+                3.375 3.375 0 016.75 0z"/>
+            </svg>
+
+            Partos
+
+            <svg class="ml-auto h-5 w-5 transition-transform" :class="{ 'rotate-90': open }"
+              fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+
+          <!-- Submenú -->
+          <ul x-show="open" class="ml-8 mt-2 space-y-1" x-transition>
+            <li>
+              <a href="{% url 'lista_partos' %}"
+                class="block rounded-md p-2 text-sm leading-6
+                {% if request.path == '/pacientes/crear/' %}
+                  text-indigo-400
+                {% else %}
+                  text-gray-400 hover:text-white hover:bg-gray-800
+                {% endif %}">
+                Listar Parto
+              </a>
+            </li>
+
+            <li>
+              <a href="{% url 'crear_parto' %}"
+                class="block rounded-md p-2 text-sm leading-6
+                {% if request.path == '/pacientes/crear/' %}
+                  text-indigo-400
+                {% else %}
+                  text-gray-400 hover:text-white hover:bg-gray-800
+                {% endif %}">
+                Crear Parto
+              </a>
+            </li>
+          </ul>
+        <!-- FIN SUBMENÚ PARTOS -->
+
+        <!--- SUBMENÚ NEONATOS --->
+        {% if request.path|slice:":10" == "/partos" %}
+          <li x-data="{ open: true }">
+        {% else %}
+          <li x-data="{ open: false }">
+        {% endif %}
+
+          <!-- Botón principal -->
+          <button @click="open = !open"
+            class="w-full group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
+            {% if request.path|slice:":10" == "/partos" %}
+              text-white bg-gray-800
+            {% else %}
+              text-gray-400 hover:text-white hover:bg-gray-800
+            {% endif %}">
+            
+            <!-- Icono Personas -->
+            <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24"
+              stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 
+                4.125 4.125 0 00-7.533-2.493
+                M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07
+                M15 19.128v.106A12.318 12.318 0 018.624 21
+                c-2.331 0-4.512-.645-6.374-1.766l-.001-.109
+                a6.375 6.375 0 0111.964-3.07
+                M12 6.375a3.375 3.375 0 11-6.75 0 
+                3.375 3.375 0 016.75 0z"/>
+            </svg>
+
+            Neonatos
+
+            <svg class="ml-auto h-5 w-5 transition-transform" :class="{ 'rotate-90': open }"
+              fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+
+          <!-- Submenú -->
+          <ul x-show="open" class="ml-8 mt-2 space-y-1" x-transition>
+            <li>
+              <a href="{% url 'lista_partos' %}"
+                class="block rounded-md p-2 text-sm leading-6
+                {% if request.path == '/pacientes/crear/' %}
+                  text-indigo-400
+                {% else %}
+                  text-gray-400 hover:text-white hover:bg-gray-800
+                {% endif %}">
+                Listar Parto
+              </a>
+            </li>
+
+            <li>
+              <a href="{% url 'crear_parto' %}"
+                class="block rounded-md p-2 text-sm leading-6
+                {% if request.path == '/pacientes/crear/' %}
+                  text-indigo-400
+                {% else %}
+                  text-gray-400 hover:text-white hover:bg-gray-800
+                {% endif %}">
+                Crear Parto
+              </a>
+            </li>
+          </ul>
+        <!-- FIN SUBMENÚ NEONATOS -->
+
+
         <!-- CONFIGURACIONES -->
         <div class="text-xs font-semibold leading-6 text-gray-400">
           Tus Configuraciones
@@ -227,7 +362,7 @@
           <path d="M7 12h14l-3 -3m0 6l3 -3"/>
         </svg>
 
-        Cerrar Seccion
+        Cerrar Sesión
       </a>
     </li>
 

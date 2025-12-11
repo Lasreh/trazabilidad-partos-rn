@@ -1,0 +1,15 @@
+{% extends "components/Layout/base_pages.html" %}
+{% load crispy_forms_tags %}
+
+{% block content_pages %}
+<h1 class="text-2xl font-bold mb-4">Crear Parto</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+
+    <button class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded">
+        Crear Parto
+    </button>
+</form>
+{% endblock %}

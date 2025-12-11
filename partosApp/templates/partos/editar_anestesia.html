@@ -1,0 +1,28 @@
+{% extends "components/Layout/base_pages.html" %}
+{% load crispy_forms_tags %}
+
+{% block content_pages %}
+    {% include "partos/_tabs.html" with active_tab='anestesia' %}
+
+    <h2 class="text-xl font-bold mb-4">Anestesia</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+        <div class="mt-4 flex space-x-2">
+            <!-- Botón Guardar Anestesia -->
+            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded">
+                Guardar Anestesia
+            </button>
+
+            <!-- Botón Finalizar con confirmación -->
+            <button type="submit"
+                    formaction="{% url 'finalizar_parto' pk=parto.pk %}"
+                    onclick="return confirm('¿Está seguro que desea finalizar el proceso?');"
+                    class="bg-indigo-600 text-white px-4 py-2 rounded ml-2">
+                Finalizar
+            </button>
+        </div>
+    </form>
+{% endblock %}

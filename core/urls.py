@@ -10,6 +10,7 @@ urlpatterns = [
     path("", include("UsuarioApp.urls")),
     
     path('pacientes/', include('pacientesApp.urls')),
+    path('partos/', include('partosApp.urls')),
 
 ]
 

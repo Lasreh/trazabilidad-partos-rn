@@ -33,7 +33,8 @@ DEFAULT_DJANGO_APPS = [
 LOCAL_APPS = [
     "homeApp",
     "UsuarioApp.apps.UsuarioappConfig",
-    'pacientesApp',
+    "pacientesApp",
+    "partosApp",
 ]
 
 THIRD_APPS = [

@@ -1,0 +1,15 @@
+{% extends "components/Layout/base_pages.html" %}
+
+{% block content_pages %}
+{% include "partos/_tabs.html" with active_tab='anestesia' %}
+
+<h2 class="text-xl font-semibold">Anestesia</h2>
+
+<p class="text-gray-700 mt-2">Este parto no tiene registro de anestesia.</p>
+
+<a href="{% url 'crear_anestesia' parto.id %}"
+   class="inline-block mt-4 bg-blue-600 text-white px-4 py-2 rounded">
+    Registrar Anestesia
+</a>
+
+{% endblock %}

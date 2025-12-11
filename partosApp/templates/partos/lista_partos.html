@@ -1,0 +1,122 @@
+{% extends "components/Layout/base_pages.html" %}
+
+{% block content_pages %}
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="p-3 mb-4 rounded text-white {% if message.tags == 'success' %}bg-green-600{% elif message.tags == 'error' %}bg-red-600{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<h1 class="text-2xl font-bold mb-6">Lista de Partos</h1>
+
+<div class="mb-6">
+    <a href="{% url 'lista_pacientes' %}" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Atrás</a>
+</div>
+
+<div x-data="{ selected: null }" class="overflow-x-auto">
+    <table class="min-w-full border border-gray-300 text-left">
+        <thead class="bg-gray-200">
+            <tr>
+                <th class="px-4 py-2 border">Paciente</th>
+                <th class="px-4 py-2 border">Fecha</th>
+                <th class="px-4 py-2 border">Tipo de parto</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for parto in partos %}
+                <!-- Fila principal -->
+                <tr x-show="selected === null || selected === {{ parto.id }}"
+                    class="hover:bg-gray-100 cursor-pointer"
+                    @click="selected = selected === {{ parto.id }} ? null : {{ parto.id }}">
+                    <td class="px-4 py-2 border font-medium">{{ parto.paciente.nombre_completo }}</td>
+                    <td class="px-4 py-2 border">{{ parto.fecha|date:"d/m/Y" }}</td>
+                    <td class="px-4 py-2 border">{{ parto.tipo_parto }}</td>
+                </tr>
+
+                <!-- Fila expandida con todos los campos -->
+                <tr x-show="selected === {{ parto.id }}">
+                    <td colspan="3" class="px-4 py-4 border bg-gray-50">
+                        <div class="p-4 bg-white border rounded shadow-sm grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div><strong>Tipo paciente:</strong> {{ parto.tipo_paciente }}</div>
+                            <div><strong>Origen ingreso:</strong> {{ parto.origen_ingreso }}</div>
+                            <div><strong>Clasificación Robson:</strong> {{ parto.clasificacion_robson }}</div>
+                            <div><strong>Posición materna:</strong> {{ parto.posicion_materna }}</div>
+                            <div><strong>Estado periné:</strong> {{ parto.estado_perine }}</div>
+                            <div><strong>Tipo régimen:</strong> {{ parto.tipo_regimen }}</div>
+
+                            <div><strong>Fecha:</strong> {{ parto.fecha|date:"d/m/Y" }}</div>
+                            <div><strong>Hora:</strong> {{ parto.hora|time:"H:i" }}</div>
+                            <div><strong>Plan parto:</strong> {% if parto.plan_parto %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Visita guiada:</strong> {% if parto.visita_guiada %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>IMC:</strong> {{ parto.imc }}</div>
+                            <div><strong>Paridad:</strong> {{ parto.paridad }}</div>
+
+                            <div><strong>Control prenatal:</strong> {% if parto.control_prenatal %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Consultorio origen:</strong> {{ parto.consultorio_origen }}</div>
+                            <div><strong>Nro ARO:</strong> {{ parto.nro_aro }}</div>
+                            <div><strong>Sem obst semanas:</strong> {{ parto.sem_obst_semanas }}</div>
+                            <div><strong>Sem obst días:</strong> {{ parto.sem_obst_dias }}</div>
+
+                            <div><strong>Monitor:</strong> {% if parto.monitor %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>TTC:</strong> {% if parto.ttc %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Inducción:</strong> {% if parto.induccion %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Aceleración:</strong> {% if parto.aceleracion %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Nro TV:</strong> {{ parto.nro_tv }}</div>
+                            <div><strong>Rotura membrana:</strong> {% if parto.rotura_membrana %}Sí{% else %}No{% endif %}</div>
+
+                            <div><strong>Tiempo membranas rotas:</strong> {{ parto.tiempo_membranas_rotas }}</div>
+                            <div><strong>Tiempo dilatación:</strong> {{ parto.tiempo_dilatacion }}</div>
+                            <div><strong>Tiempo expulsivo:</strong> {{ parto.tiempo_expulsivo }}</div>
+                            <div><strong>Libertad movimiento:</strong> {% if parto.libertad_movimiento %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Alumbramiento dirigido:</strong> {% if parto.alumbramiento_dirigido %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Ofrecimiento posiciones:</strong> {% if parto.ofrecimiento_posiciones %}Sí{% else %}No{% endif %}</div>
+
+                            <div><strong>Esterilización:</strong> {% if parto.esterilizacion %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Revisión:</strong> {% if parto.revision %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Uso sala SAIP:</strong> {% if parto.uso_sala_saip %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Folio válido:</strong> {% if parto.folio_valido %}Sí{% else %}No{% endif %}</div>
+                            <div><strong>Folio nulo:</strong> {% if parto.folio_nulo %}Sí{% else %}No{% endif %}</div>
+
+                            <div class="col-span-full"><strong>Observaciones:</strong> {{ parto.observaciones }}</div>
+                            <div><strong>Creado por:</strong> {{ parto.created_by }}</div>
+                            <div><strong>Creado en:</strong> {{ parto.created_at|date:"d/m/Y H:i" }}</div>
+                            <div><strong>Actualizado en:</strong> {{ parto.updated_at|date:"d/m/Y H:i" }}</div>
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td class="px-4 py-2 border text-center" colspan="3">No hay partos registrados.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Paginación -->
+{% if partos.paginator.num_pages > 1 %}
+<div class="mt-6 flex justify-center space-x-2">
+    {% if partos.has_previous %}
+        <a href="?page={{ partos.previous_page_number }}" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Anterior</a>
+    {% endif %}
+
+    <span class="px-3 py-1 bg-gray-200 rounded">
+        Página {{ partos.number }} de {{ partos.paginator.num_pages }}
+    </span>
+
+    {% if partos.has_next %}
+        <a href="?page={{ partos.next_page_number }}" class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Siguiente</a>
+    {% endif %}
+</div>
+{% else %}
+<div class="mt-6 flex justify-center">
+    <span class="px-3 py-1 bg-gray-200 rounded">Página 1 de 1</span>
+</div>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+{% endblock %}

@@ -39,19 +39,33 @@ def crear_paciente(request):
     })
 
 from django.shortcuts import render
-from .models import Paciente
-from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from django.db.models import F, Value, CharField
+from django.db.models.functions import Concat
+from .models import Paciente
 
 @login_required
 def lista_pacientes(request):
-    pacientes_list = Paciente.objects.all().order_by('apellido_paterno', 'apellido_materno', 'nombre')
-    
-    paginator = Paginator(pacientes_list, 20)  # máximo 20 pacientes por página
+    run_query = request.GET.get('run', '').strip()  # Obtenemos el RUT completo con DV
+
+    pacientes_queryset = Paciente.objects.all().order_by('apellido_paterno', 'apellido_materno')
+
+    if run_query:
+        # Creamos un campo temporal "rut_completo" = run + "-" + dv
+        pacientes_queryset = pacientes_queryset.annotate(
+            rut_completo=Concat('run', Value('-'), 'dv', output_field=CharField())
+        ).filter(rut_completo__icontains=run_query)
+
+    # Paginación: 20 pacientes por página
+    paginator = Paginator(pacientes_queryset, 20)
     page_number = request.GET.get('page')
-    pacientes = paginator.get_page(page_number)  # devuelve un objeto Page
-    
-    return render(request, 'pacientes/lista.html', {'pacientes': pacientes})
+    pacientes = paginator.get_page(page_number)
+
+    return render(request, "pacientes/lista.html", {
+        "pacientes": pacientes,
+        "run_query": run_query,
+    })
 
 
 def lista_hospitalizaciones(request):
